@@ -4,11 +4,13 @@
 import gym
 import sys
 import matplotlib.pyplot as plt
+import pdb
 
 # user imports
-import params
-from maxq import MaxQ
-from maxGraph import MaxGraph
+import Params
+from Maxq import MaxQ
+from MaxGraph import MaxGraph
+from environments.TaxiGraph import TaxiGraph
 
 class LearningManager:
     def __init__(self):
@@ -16,11 +18,10 @@ class LearningManager:
         self.env = gym.make('Taxi-v2')
 
         # setup parameters
-        params.params = params.Params(self.env)
+        Params.params = Params.Params(self.env)
 
         # setup the graph
-        self.maxGraph = MaxGraph()
-        self.maxGraph.constructTaxiGraph()
+        self.maxGraph = TaxiGraph()
 
         # maxq setup
         self.maxq = MaxQ(self.env, self.maxGraph)
@@ -33,12 +34,12 @@ class LearningManager:
         plt.xlabel("Time Step")
         plt.ylabel("Reward")
 
-        for i in range(params.params.maxEpisodes - params.params.numEpisodes):
+        for i in range(Params.params.maxEpisodes - Params.params.numEpisodes):
             reward = 0
 
             # train the model
-            if params.params.viewToggle == True:
-                if i % params.params.viewDelay == 0:
+            if Params.params.viewToggle == True:
+                if i % Params.params.viewDelay == 0:
                     raw_input("press enter to continue...")
                     reward = self.maxq.runEpisode(True)
                 else:
@@ -46,28 +47,28 @@ class LearningManager:
             else:
                 reward = self.maxq.runEpisode(False)
 
-            params.params.rewards.append(reward)
+            Params.params.rewards.append(reward)
 
             # print feedback to the user
-            if i % params.params.printDelay == 0:
-                print "episode: {} timesteps: {} reward: ".format(params.params.numEpisodes, params.params.numTimesteps, reward)
+            if i % Params.params.printDelay == 0:
+                print "episode: {} timesteps: {} reward: ".format(Params.params.numEpisodes, Params.params.numTimesteps, reward)
 
             # save the model
-            if i % params.params.saveDelay == 0 and i != 0:
+            if i % Params.params.saveDelay == 0 and i != 0:
                 self.maxQ.save()
-                params.saveParameters()
+                Params.saveParameters()
 
 
         # create averaged rewards
-        averages = range(params.params.numEpisodes-100)
+        averages = range(Params.params.numEpisodes-100)
 
         summation = 0
-        for i in range(params.total_episodes):
+        for i in range(Params.params.total_episodes):
             if i // 100 == 0:
-                summation += params.rewards[i]
+                summation += Params.params.rewards[i]
             else:
-                summation += params.rewards[i]
-                summation -= params.rewards[i-100]
+                summation += Params.params.rewards[i]
+                summation -= Params.params.rewards[i-100]
                 averagedRewards.append(summation/100)
 
         plt.plot(averages, averagedRewards)

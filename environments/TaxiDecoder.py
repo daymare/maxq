@@ -22,62 +22,65 @@ def decodeTaxiState(taxiState):
 ### termination functions
 # all return two values: whether the current state is a terminal state and the value of this terminal state
 # thus termination functions specify both the termination function and the pseudo reward function
-def primitive_isTerminal(state, parameter=0):
+def primitive_isTerminal(state):
     return True, 0
 
-def root_isTerminal(state, parameter):
+def root_isTerminal(state):
     return False, -1
 
-def get_isTerminal(state, parameter=0):
+def get_isTerminal(state):
     features = decodeTaxiState(state)
     if features[2] == 5:
         return True, 0
     else:
         return False, -1
 
-def put_isTerminal(state, parameter=0):
-    features = decodeTaxiState(state, terminal=0)
+def put_isTerminal(state):
+    features = decodeTaxiState(state)
     if features[2] != 5:
         return True, 0
     else:
         return False, -1
 
-def navigate_isTerminal(state, parameter):
+def navigate_get_isTerminal(state):
     features = decodeTaxiState(state)
     taxiloc = (features[0], features[1])
 
-    assert parameter == 0 or parameter == 1
+    if taxiloc == locs[features[2]]:
+        return True, 0
 
-    if parameter == 0:
-        # get 
-        if taxiloc == locs[features[2]]:
-            return True, 0
+def navigate_put_isTerminal(state):
+    features = decodeTaxiState(state)
+    taxiloc = (features[0], features[1])
 
-    elif parameter == 1:
-        # put
-        if taxiloc == locs[features[3]]:
-            return True, 0
+    if taxiloc == locs[features[3]]:
+        return True, 0
 
-    return False, -1
-    
-    
 
 ### Active State functions
 # all return whether the current state is valid for the given subproblem
-def primitive_isActive(state, parameter):
+def primitive_isActive(state):
     return True
 
-def root_isActive(state, parameter):
+def root_isActive(state):
     return True
 
-def get_isActive(state, parameter):
+def get_isActive(state):
     features = decodeTaxiState(state)
     return features[2] != 5
 
-def put_isActive(state, parameter):
+def put_isActive(state):
     features = decodeTaxiState(state)
     return features[2] == 5
 
-def navigate_isActive(state, parameter):
-    return True
+
+# get only active when the passenger is not in the taxi
+def navigate_get_isActive(state):
+    features = decodeTaxiState(state)
+    return features[2] != 5
+
+# put only active when the passenger is in the taxi
+def navigate_put_isActive(state):
+    features = decodeTaxiState(state)
+    return features[2] == 5
 

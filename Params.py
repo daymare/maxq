@@ -42,5 +42,5 @@ class Params:
         self.rewards = []
 
 
-params = None
+
 
