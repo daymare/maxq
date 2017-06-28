@@ -61,7 +61,7 @@ class MaxQ:
         else:
             count = 0
 
-            while maxNode.isTerminal(state) == False and maxNode.isActive(state) == True:
+            while maxNode.isTerminal(state) == False
                 # choose action according to exploration policy
                 action = self.getAction(maxNode, state) 
                 actionMaxNode = maxNode.getMaxChild(action)

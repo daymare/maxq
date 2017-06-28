@@ -14,7 +14,6 @@ class MaxGraph:
     def __init__(self):
         self.maxRoot = MaxNode()
         self.maxRoot.addTerminationFunction(TaxiDecoder.root_isTerminal)
-        self.maxRoot.addActiveFunction(TaxiDecoder.root_isActive)
 
         self.constructGraph()
 
@@ -28,11 +27,10 @@ def getStateId(state):
     return state
 
 
-def createMaxNode(name, qChildren, terminationFunction, activeFunction):
+def createMaxNode(name, qChildren, terminationFunction):
     maxNode = MaxNode(name, False)
 
     maxNode.addTerminationFunction(terminationFunction)
-    maxNode.addActiveFunction(activeFunction)
 
     for child in qChildren:
         maxNode.addChild(child)
@@ -52,8 +50,8 @@ def createPrimitiveNode(name, primitiveAction):
     return qPrimitive
 
 # creates a composite Qnode maxnode pair and returns the Q node parent
-def createCompositeNode(name, qChildren, terminationFunction, activeFunction):
-    maxNode = createMaxNode(name, qChildren, terminationFunction, activeFunction)
+def createCompositeNode(name, qChildren, terminationFunction):
+    maxNode = createMaxNode(name, qChildren, terminationFunction)
     qNode = createQNode("q"+name, maxNode)
     return qNode
 
@@ -67,7 +65,6 @@ class MaxNode:
         self.primitiveAction = primitiveAction
         self.vFunction = {}
         self.terminationFunction = TaxiDecoder.primitive_isTerminal
-        self.activeFunction = TaxiDecoder.primitive_isActive
 
     def addChild(self, qChild):
         newChild = copy.deepcopy(qChild)
@@ -75,9 +72,6 @@ class MaxNode:
 
     def getChild(self, childIndex):
         return self.childNodes[childIndex]
-
-    def addActiveFunction(self, activeFunction):
-        self.activeFunction = activeFunction
 
     def addTerminationFunction(self, terminationFunction):
         self.terminationFunction = terminationFunction
@@ -88,9 +82,6 @@ class MaxNode:
     def isTerminal(self, state):
         actuallyIsTerminal, _ = self.terminationFunction(state)
         return actuallyIsTerminal
-
-    def isActive(self, state):
-        return self.activeFunction(state)
 
     def getPseudoReward(self, state):
         _, pseudoReward = self.terminationFunction(state)

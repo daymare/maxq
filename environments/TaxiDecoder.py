@@ -56,31 +56,3 @@ def navigate_put_isTerminal(state):
     if taxiloc == locs[features[3]]:
         return True, 0
 
-
-### Active State functions
-# all return whether the current state is valid for the given subproblem
-def primitive_isActive(state):
-    return True
-
-def root_isActive(state):
-    return True
-
-def get_isActive(state):
-    features = decodeTaxiState(state)
-    return features[2] != 5
-
-def put_isActive(state):
-    features = decodeTaxiState(state)
-    return features[2] == 5
-
-
-# get only active when the passenger is not in the taxi
-def navigate_get_isActive(state):
-    features = decodeTaxiState(state)
-    return features[2] != 5
-
-# put only active when the passenger is in the taxi
-def navigate_put_isActive(state):
-    features = decodeTaxiState(state)
-    return features[2] == 5
-
