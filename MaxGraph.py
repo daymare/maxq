@@ -117,7 +117,6 @@ class MaxNode:
         maxIValue = None
         maxValue = None
 
-        print("\nget max Q value: {}".format(self.name))
         
         for i in range(0, len(self.childNodes)):
             child = self.childNodes[i]
@@ -128,14 +127,12 @@ class MaxNode:
             if maxChild.isTerminal(state) == True and maxChild.isPrimitive() == False:
                 continue
 
-            print ("child: {} qValue: {}".format(child.name, value))
             
             if maxIValue == None or value > maxIValue:
                 maxIValue = value
                 maxValue = child.getExteriorQValue(state)
                 maxIndex = i
 
-        print("chosen child: {} internalValue: {} externalValue: {}\n".format(self.childNodes[maxIndex].name, maxIValue, maxValue))
 
         return maxValue, maxIndex
 
@@ -209,20 +206,9 @@ class QNode:
         # calculate new interior value
         newICValue = (1-alpha) * oldICValue + alpha * gamma * (pseudoReward + resultICValue + resultV)
 
-        print("\nupdate interior c value for: {}".format(self.name))
-        print("oldICValue: {}".format(oldICValue))
-        print("newPart: {}".format(pseudoReward + resultICValue + resultV))
-        print("newICValue: {}".format(newICValue))
-        print("pseudoReward: {}".format(pseudoReward))
-        print("resultICValue: {}".format(resultICValue))
-        print("resultV: {}".format(resultV))
-        print("gamma: {}\n".format(gamma))
-
         # udpate the interior value table
         stateId = getStateId(state)
-        print("before: {}".format(self.interiorCFunction.get(stateId, Params.params.defaultCValue)))
         self.interiorCFunction[stateId] = newICValue
-        print("after: {}\n".format(self.interiorCFunction[stateId]))
 
     def updateExteriorCValue(self, state, oldCValue, resultCValue, resultV):
         alpha = Params.params.alpha

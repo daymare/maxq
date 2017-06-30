@@ -9,7 +9,7 @@ class Display:
         self.env = env
     
     def displayStep(self, nodeStack, state, action, maxNode):
-        #print(chr(27) + "[2J]")
+        print(chr(27) + "[2J]")
 
         self.printParameters()
         self.printStack(nodeStack)

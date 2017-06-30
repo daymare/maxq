@@ -4,7 +4,7 @@ import random
 import pdb
 
 # user imports
-from Params import Params
+import Params
 from Display import Display
 
 class MaxQ:
@@ -27,6 +27,8 @@ class MaxQ:
         initState = self.env.reset()
         self._MaxQQ(self.graph.getRoot(), initState)
 
+        Params.params.numEpisodes += 1
+
         return self.episodeReward
 
     def initEpisode(self):
@@ -46,6 +48,7 @@ class MaxQ:
             # execute and receive feedback
             resultState, reward, terminal, _ = self.env.step(maxNode.primitiveAction)
             self.episodeReward += reward
+            Params.params.numTimesteps += 1
 
             # if it is terminal ancestor terminate the whole stack. root terminal is the same as env terminal.
             if terminal == True:
@@ -116,10 +119,7 @@ class MaxQ:
         print("\n")
 
     def ancestorTerminate(self, maxNode):
-        print "ancestor terminating {}!".format(maxNode.name)
 
-        print "stack before:"
-        self.printStack()
 
         # remove up to the terminating node from the stack
         while self.ancestorStack[-1] != maxNode:
@@ -128,8 +128,6 @@ class MaxQ:
         # remove the terminating node from the stack
         del self.ancestorStack[-1]
 
-        print "stack after:"
-        self.printStack()
 
     def updateCompletionFunctions(self, maxNode, state, action, resultState, resultAction):
         

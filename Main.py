@@ -36,6 +36,7 @@ class LearningManager:
 
         for i in range(Params.params.maxEpisodes - Params.params.numEpisodes):
             reward = 0
+            rewardSincePrint = 0
 
             # train the model
             if Params.params.viewToggle == True:
@@ -48,10 +49,13 @@ class LearningManager:
                 reward = self.maxq.runEpisode(False)
 
             Params.params.rewards.append(reward)
+            rewardSincePrint += reward
 
             # print feedback to the user
             if i % Params.params.printDelay == 0:
-                print "episode: {} timesteps: {} reward: ".format(Params.params.numEpisodes, Params.params.numTimesteps, reward)
+                averagedReward = rewardSincePrint / Params.params.printDelay
+                print "episode: {} timesteps: {} averagedReward: {}".format(Params.params.numEpisodes, Params.params.numTimesteps, reward)
+                averagedReward = 0
 
             # save the model TODO
             """
@@ -65,7 +69,7 @@ class LearningManager:
         averages = range(Params.params.numEpisodes-100)
 
         summation = 0
-        for i in range(Params.params.total_episodes):
+        for i in range(Params.params.numEpisodes):
             if i // 100 == 0:
                 summation += Params.params.rewards[i]
             else:
