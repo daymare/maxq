@@ -16,16 +16,16 @@ class TaxiGraph(MaxGraph.MaxGraph):
         qWest = MaxGraph.createPrimitiveNode("West", 3)
 
         # navigate
-        qNavigate_Get = MaxGraph.createCompositeNode("Navigate_Get", [qNorth, qEast, qSouth, qWest], TaxiDecoder.navigate_get_isTerminal, TaxiDecoder.navigate_get_isActive)
-        qNavigate_Put = MaxGraph.createCompositeNode("Navigate_Put", [qNorth, qEast, qSouth, qWest], TaxiDecoder.navigate_put_isTerminal, TaxiDecoder.navigate_put_isActive)
+        qNavigate_Get = MaxGraph.createCompositeNode("Navigate_Get", [qNorth, qEast, qSouth, qWest], TaxiDecoder.navigate_get_isTerminal)
+        qNavigate_Put = MaxGraph.createCompositeNode("Navigate_Put", [qNorth, qEast, qSouth, qWest], TaxiDecoder.navigate_put_isTerminal)
 
         # get
         qPickup = MaxGraph.createPrimitiveNode("Pickup", 4)
-        qGet = MaxGraph.createCompositeNode("Get", [qPickup, qNavigate_Get], TaxiDecoder.get_isTerminal, TaxiDecoder.get_isActive)
+        qGet = MaxGraph.createCompositeNode("Get", [qPickup, qNavigate_Get], TaxiDecoder.get_isTerminal)
 
         # put
         qDropoff = MaxGraph.createPrimitiveNode("Dropoff", 5)
-        qPut = MaxGraph.createCompositeNode("Put", [qDropoff, qNavigate_Put], TaxiDecoder.put_isTerminal, TaxiDecoder.put_isActive)
+        qPut = MaxGraph.createCompositeNode("Put", [qDropoff, qNavigate_Put], TaxiDecoder.put_isTerminal)
 
         # root
         root = self.getRoot()

@@ -2,6 +2,7 @@
 # python imports
 import copy
 import random
+import pdb
 
 # user imports
 import Params
@@ -96,34 +97,45 @@ class MaxNode:
         return random.randint(0, len(self.childNodes)-1)
 
     def getMaxChild(self, index):
-        print ("name: {} childIndex: {}".format(self.name, index))
         qChild = self.childNodes[index]
         maxChild = qChild.getChild()
         return maxChild
 
     def getInteriorValue(self, state, actionIndex):
         qChild = self.childNodes[actionIndex]
-        value = child.getInteriorQValue(state)
+        value = qChild.getInteriorQValue(state)
+        return value
 
     def getExteriorValue(self, state, actionIndex):
         qChild = self.childNodes[actionIndex]
-        value = child.getExteriorValue(state)
+        value = qChild.getExteriorQValue(state)
+        return value
 
     # returns the value of the highest q child and the index of the highest q child
     def getMaxQValue(self, state):
-        print ("maxqNode get max Q Value name: {}".format(self.name))
         maxIndex = 0
-        maxIValue = self.childNodes[0].getInteriorQValue(state)
-        maxValue = self.childNodes[0].getExteriorQValue(state)
+        maxIValue = None
+        maxValue = None
+
+        print("\nget max Q value: {}".format(self.name))
         
-        for i in range(1, len(self.childNodes)):
+        for i in range(0, len(self.childNodes)):
             child = self.childNodes[i]
             value = child.getInteriorQValue(state)
+
+            # check if child is valid for this state
+            maxChild = self.getMaxChild(i)
+            if maxChild.isTerminal(state) == True and maxChild.isPrimitive() == False:
+                continue
+
+            print ("child: {} qValue: {}".format(child.name, value))
             
-            if value > maxValue:
+            if maxIValue == None or value > maxIValue:
                 maxIValue = value
                 maxValue = child.getExteriorQValue(state)
                 maxIndex = i
+
+        print("chosen child: {} internalValue: {} externalValue: {}\n".format(self.childNodes[maxIndex].name, maxIValue, maxValue))
 
         return maxValue, maxIndex
 
@@ -197,9 +209,20 @@ class QNode:
         # calculate new interior value
         newICValue = (1-alpha) * oldICValue + alpha * gamma * (pseudoReward + resultICValue + resultV)
 
+        print("\nupdate interior c value for: {}".format(self.name))
+        print("oldICValue: {}".format(oldICValue))
+        print("newPart: {}".format(pseudoReward + resultICValue + resultV))
+        print("newICValue: {}".format(newICValue))
+        print("pseudoReward: {}".format(pseudoReward))
+        print("resultICValue: {}".format(resultICValue))
+        print("resultV: {}".format(resultV))
+        print("gamma: {}\n".format(gamma))
+
         # udpate the interior value table
         stateId = getStateId(state)
+        print("before: {}".format(self.interiorCFunction.get(stateId, Params.params.defaultCValue)))
         self.interiorCFunction[stateId] = newICValue
+        print("after: {}\n".format(self.interiorCFunction[stateId]))
 
     def updateExteriorCValue(self, state, oldCValue, resultCValue, resultV):
         alpha = Params.params.alpha
@@ -208,9 +231,9 @@ class QNode:
         # calculate new interior value
         newICValue = (1-alpha) * oldCValue + alpha * gamma * (resultCValue + resultV)
 
-        # udpate the interior value table
+        # udpate the exterior value table
         stateId = getStateId(state)
-        self.interiorCFunction[stateId] = newICValue
+        self.exteriorCFunction[stateId] = newICValue
 
 
 

@@ -19,9 +19,10 @@ class Params:
         self.maxEpisodeLength = 200
 
         # view parameters
-        self.viewToggle = False
-        self.viewDelay = 1
-        self.printDelay = 1
+        self.viewToggle = True
+        self.viewDelay = 20
+        self.viewSleepTime = 0.1
+        self.printDelay = 10
         
         # save/load parameters
         loadModel = False

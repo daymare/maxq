@@ -53,10 +53,12 @@ class LearningManager:
             if i % Params.params.printDelay == 0:
                 print "episode: {} timesteps: {} reward: ".format(Params.params.numEpisodes, Params.params.numTimesteps, reward)
 
-            # save the model
+            # save the model TODO
+            """
             if i % Params.params.saveDelay == 0 and i != 0:
                 self.maxQ.save()
                 Params.saveParameters()
+            """
 
 
         # create averaged rewards

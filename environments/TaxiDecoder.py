@@ -1,4 +1,4 @@
-
+import pdb
 
 locations = [(0,0), (0,4), (4,0), (4,3)]
 
@@ -30,14 +30,14 @@ def root_isTerminal(state):
 
 def get_isTerminal(state):
     features = decodeTaxiState(state)
-    if features[2] == 5:
+    if features[2] == 4:
         return True, 0
     else:
         return False, -1
 
 def put_isTerminal(state):
     features = decodeTaxiState(state)
-    if features[2] != 5:
+    if features[2] != 4:
         return True, 0
     else:
         return False, -1
@@ -46,13 +46,23 @@ def navigate_get_isTerminal(state):
     features = decodeTaxiState(state)
     taxiloc = (features[0], features[1])
 
-    if taxiloc == locs[features[2]]:
+    if features[2] == 4:
+        return True, -1
+
+    if taxiloc == locations[features[2]]:
         return True, 0
+    else:
+        return False, -1
 
 def navigate_put_isTerminal(state):
     features = decodeTaxiState(state)
     taxiloc = (features[0], features[1])
 
-    if taxiloc == locs[features[3]]:
+    if features[2] != 4:
+        return True, -1
+
+    if taxiloc == locations[features[3]]:
         return True, 0
+    else:
+        return False, -1
 

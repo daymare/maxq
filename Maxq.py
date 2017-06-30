@@ -1,6 +1,7 @@
 
 # library imports
 import random
+import pdb
 
 # user imports
 from Params import Params
@@ -48,7 +49,7 @@ class MaxQ:
 
             # if it is terminal ancestor terminate the whole stack. root terminal is the same as env terminal.
             if terminal == True:
-                self.ancestorTerminate(maxGraph.getRoot())
+                self.ancestorTerminate(self.graph.getRoot())
 
             # check for ancestor termination on the whole stack
             self.handleAncestorTermination(resultState)
@@ -61,22 +62,24 @@ class MaxQ:
         else:
             count = 0
 
-            while maxNode.isTerminal(state) == False
+            while maxNode.isTerminal(state) == False:
                 # choose action according to exploration policy
                 action = self.getAction(maxNode, state) 
                 actionMaxNode = maxNode.getMaxChild(action)
-                childSequence, resultState = self._MaxQQ(actionMaxNode, state)
 
                 # display the environment and program state to the user
-                self.displayManager.displayStep(self.ancestorStack, state, action, maxNode)
+                if self.display == True:
+                    self.displayManager.displayStep(self.ancestorStack, state, action, maxNode)
+
+                childSequence, resultState = self._MaxQQ(actionMaxNode, state)
 
                 # check for ancestor termination 
                 # check the stack to see if we are the node that should be running right now. and if not, terminate
-                if self.ancestorStack[len(self.ancestorStack)-1] != maxNode:
+                if len(self.ancestorStack) ==0 or self.ancestorStack[-1] != maxNode:
                     return childSequence, resultState
 
                 # find a-prime, best action
-                aPrime = maxNode.getMaxAction(state)
+                aPrime = maxNode.getMaxAction(resultState)
                
                 # update completion functions 
                 n = 1
@@ -90,7 +93,9 @@ class MaxQ:
                 state = resultState
 
         # manage stack on return
-        self.ancestorStack.pop()
+        if len(self.ancestorStack) > 0:
+            if self.ancestorStack[-1] == maxNode:
+                self.ancestorStack.pop()
         
         return seq, resultState
 
@@ -102,17 +107,32 @@ class MaxQ:
                 self.ancestorTerminate(maxNode)
                 return
 
+    def printStack(self):
+        print("")
+
+        for node in self.ancestorStack:
+            print("{}".format(node.name))
+
+        print("\n")
+
     def ancestorTerminate(self, maxNode):
         print "ancestor terminating {}!".format(maxNode.name)
 
+        print "stack before:"
+        self.printStack()
+
         # remove up to the terminating node from the stack
-        while self.ancestorStack[len(self.ancestorStack)-1] != maxNode:
-            self.ancestorStack.pop()
+        while self.ancestorStack[-1] != maxNode:
+            del self.ancestorStack[-1]
 
         # remove the terminating node from the stack
-        self.ancestorStack.pop()
+        del self.ancestorStack[-1]
+
+        print "stack after:"
+        self.printStack()
 
     def updateCompletionFunctions(self, maxNode, state, action, resultState, resultAction):
+        
         # Q nodes
         actionQNode = maxNode.getChild(action)
         resultQNode = maxNode.getChild(resultAction)
@@ -141,7 +161,7 @@ class MaxQ:
         rand = random.random()
         action = 0
     
-        if rand < 0.1:
+        if rand < 0.1: #TODO make this into a parameter
             action = maxNode.getRandomAction(state)
         else:
             action = maxNode.getMaxAction(state)
