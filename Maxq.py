@@ -50,6 +50,9 @@ class MaxQ:
             self.episodeReward += reward
             Params.params.numTimesteps += 1
 
+            if Params.params.alpha > Params.params.minAlpha:
+                Params.params.alpha -= Params.params.alphaStepDrop
+
             # if it is terminal ancestor terminate the whole stack. root terminal is the same as env terminal.
             if terminal == True:
                 self.ancestorTerminate(self.graph.getRoot())
