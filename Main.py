@@ -11,6 +11,7 @@ import Params
 from Maxq import MaxQ
 from MaxGraph import MaxGraph
 from environments.TaxiGraph import TaxiGraph
+from environments.MRTaxiGraph import MRTaxiGraph
 
 class LearningManager:
     def __init__(self):
@@ -55,7 +56,7 @@ class LearningManager:
             if i % Params.params.printDelay == 0:
                 averagedReward = rewardSincePrint / Params.params.printDelay
                 print "episode: {} timesteps: {} averagedReward: {}".format(Params.params.numEpisodes, Params.params.numTimesteps, reward)
-                averagedReward = 0
+                rewardSincePrint = 0
 
             # save the model TODO
             """
